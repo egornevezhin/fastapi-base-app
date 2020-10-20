@@ -18,10 +18,10 @@ services:
     ports:
       - 8000:8000
     environment:
-      - USER_SERVICE_HOST_URL=http://'${PROJECT_NAME?Variable not set}:${TAG-latest}':8000/api/v1/PROJECT_NAME/
+      - USER_SERVICE_HOST_URL=http://{{ cookiecutter.project_slug }}_backend:8000/api/v1/{{ cookiecutter.project_slug }}/
 
   db:
-    container_name: {{ cookiecutter.project_slug }}_db:latest
+    container_name: {{ cookiecutter.project_slug }}_db
     image: postgres:12.2
     restart: on-failure
     ports:
@@ -41,3 +41,6 @@ services:
       - 80:80
     env_file:
       - .env
+
+volumes:
+  app-db-data:
