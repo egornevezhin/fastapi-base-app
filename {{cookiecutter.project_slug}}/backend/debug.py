@@ -2,7 +2,7 @@ import uvicorn
 
 import os
 os.environ['DB_SERVER'] = 'localhost'
-from '{{ cookiecutter.project_slug}}'.main import app
+from backend.main import app
 
 
 if __name__ == "__main__":
