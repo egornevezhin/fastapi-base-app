@@ -1,0 +1,41 @@
+version: '3.7'
+
+services:
+
+  backend:
+    container_name: '${PROJECT_NAME?Variable not set}:${TAG-latest}'
+    env_file:
+      - .env
+    build:
+      context: ./backend
+      dockerfile: backend.dockerfile
+    restart: on-failure
+    depends_on:
+      - user_db
+    volumes:
+      - ./backend:/app
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    ports:
+      - 8000:8000
+
+  db:
+    container_name: '${PROJECT_NAME?Variable not set}_db:${TAG-latest}'
+    image: postgres:12.2
+    restart: on-failure
+    ports:
+      - 5432:5432
+    volumes:
+      - app-db-data:/var/lib/postgresql
+    env_file:
+      - .env
+
+  nginx:
+    image: '${PROJECT_NAME?Variable not set}_nginx:${TAG-latest}'
+    container_name: avatar_nginx
+    restart: always
+    volumes:
+      - ./nginx_config.conf:/etc/nginx/conf.d/default.config
+    ports:
+      - 80:80
+    env_file:
+      - .env
