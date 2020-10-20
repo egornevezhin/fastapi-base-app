@@ -3,7 +3,7 @@ version: '3.7'
 services:
 
   backend:
-    container_name: '${PROJECT_NAME?Variable not set}:${TAG-latest}'
+    container_name: {{ cookiecutter.project_slug }}_backend:latest
     env_file:
       - .env
     build:
@@ -11,7 +11,7 @@ services:
       dockerfile: backend.dockerfile
     restart: on-failure
     depends_on:
-      - user_db
+      - db
     volumes:
       - ./backend:/app
     command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
@@ -21,7 +21,7 @@ services:
       - USER_SERVICE_HOST_URL=http://'${PROJECT_NAME?Variable not set}:${TAG-latest}':8000/api/v1/PROJECT_NAME/
 
   db:
-    container_name: '${PROJECT_NAME?Variable not set}_db:${TAG-latest}'
+    container_name: {{ cookiecutter.project_slug }}_db:latest
     image: postgres:12.2
     restart: on-failure
     ports:
@@ -32,8 +32,8 @@ services:
       - .env
 
   nginx:
-    image: '${PROJECT_NAME?Variable not set}_nginx:${TAG-latest}'
-    container_name: avatar_nginx
+    image: nginx:latest
+    container_name: {{ cookiecutter.project_slug }}_nginx
     restart: always
     volumes:
       - ./nginx_config.conf:/etc/nginx/conf.d/default.config
